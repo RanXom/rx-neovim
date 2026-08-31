@@ -116,5 +116,39 @@ local gh = require('core.utils').gh
   ---@diagnostic disable-next-line: duplicate-set-field
   statusline.section_location = function() return '%2l:%-2v' end
 
+  -- Apply Matugen primary colors and transparency dynamically
+  vim.api.nvim_create_autocmd('ColorScheme', {
+    group = vim.api.nvim_create_augroup('MiniStatuslineColors', { clear = true }),
+    callback = function()
+      -- Try to get colors from base16-colorscheme (populated by matugen)
+      local ok, b16 = pcall(require, 'base16-colorscheme')
+      if not ok or not b16.colors then return end
+
+      local c = b16.colors
+      local set_hl = function(group, fg, bg, bold)
+        vim.api.nvim_set_hl(0, group, { fg = fg, bg = bg, bold = bold })
+      end
+
+      -- Base00 is usually background, Base05 is foreground
+      -- Primary colors: Base0D (Blue), Base0B (Green), Base0E (Purple), Base08 (Red), Base09 (Orange)
+      set_hl('MiniStatuslineModeNormal',  c.base00, c.base0D, true)
+      set_hl('MiniStatuslineModeInsert',  c.base00, c.base0B, true)
+      set_hl('MiniStatuslineModeVisual',  c.base00, c.base0E, true)
+      set_hl('MiniStatuslineModeReplace', c.base00, c.base08, true)
+      set_hl('MiniStatuslineModeCommand', c.base00, c.base09, true)
+      set_hl('MiniStatuslineModeOther',   c.base00, c.base05, true)
+
+      set_hl('MiniStatuslineDevinfo',     c.base05, 'NONE', false)
+      set_hl('MiniStatuslineFileinfo',    c.base05, 'NONE', false)
+
+      -- Make the center part of the statusline transparent.
+      -- The center separator `%=` inherits the background of the previous section,
+      -- which by default is `MiniStatuslineFilename`.
+      set_hl('MiniStatuslineFilename',    c.base05, 'NONE', true)
+      vim.api.nvim_set_hl(0, 'StatusLine',   { bg = 'NONE', fg = 'NONE' })
+      vim.api.nvim_set_hl(0, 'StatusLineNC', { bg = 'NONE', fg = 'NONE' })
+    end,
+  })
+
   -- ... and there is more!
   --  Check out: https://github.com/nvim-mini/mini.nvim
