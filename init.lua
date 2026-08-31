@@ -88,7 +88,7 @@ P.S. You can delete this when you're done too. It's your config now! :)
 -- SECTION 1: OPTIONS
 -- Core Neovim settings, leaders, options
 -- ============================================================
-require 'config.options'
+require 'core.options'
 
 -- ============================================================
 -- SECTION 2: KEYMAPS & AUTOCMDS
