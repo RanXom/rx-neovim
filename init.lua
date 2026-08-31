@@ -118,7 +118,7 @@ require 'plugins.treesitter'
 -- ============================================================
 -- Integrations
 -- ============================================================
-local ok, matugen = pcall(require, 'integrations.matugen')
+local ok, matugen = pcall(require, 'matugen')
 if ok then matugen.setup() end
 
 -- The line beneath this is called `modeline`. See `:help modeline`
