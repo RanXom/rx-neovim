@@ -101,6 +101,7 @@ require 'plugins.formatting'
 require 'plugins.completion'
 require 'plugins.treesitter'
 require 'plugins.obsidian'
+require 'plugins.markdown'
 
 -- ============================================================
 -- Optional Kickstart modules
