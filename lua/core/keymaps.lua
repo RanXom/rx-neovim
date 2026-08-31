@@ -69,3 +69,14 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 
 
 
+
+-- Custom Command Mode prompt for single-line UI
+-- Replaces native `:` prompt with `[COMMAND] ` to match statusline aesthetics
+vim.keymap.set('n', ':', function()
+  local ok, cmd = pcall(vim.fn.input, { prompt = '[COMMAND] ', completion = 'command', cancelreturn = '' })
+  if ok and cmd and cmd ~= '' then
+    -- Execute using vim.api.nvim_command to avoid issues with some commands, 
+    -- but handle errors gracefully
+    pcall(vim.api.nvim_command, cmd)
+  end
+end, { desc = 'Custom Command Mode' })
