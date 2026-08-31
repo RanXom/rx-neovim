@@ -8,12 +8,9 @@ local gh = require('core.utils').gh
 vim.pack.add { gh 'MeanderingProgrammer/render-markdown.nvim' }
 
 require('render-markdown').setup {
-  -- LaTeX math rendering (Unicode-based via latex2text / utftex)
-  -- Requires: pip install pylatexenc (for latex2text)
-  -- or: libtexprintf package (for utftex)
+  -- Disable built-in LaTeX unicode rendering.
+  -- render-latex.nvim handles display math as images with higher fidelity.
   latex = {
-    enabled = true,
-    converter = { 'latex2text', 'utftex' },
-    highlight = 'RenderMarkdownMath',
+    enabled = false,
   },
 }

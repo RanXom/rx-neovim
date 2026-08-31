@@ -103,6 +103,7 @@ require 'plugins.treesitter'
 require 'plugins.obsidian'
 require 'plugins.markdown'
 require 'plugins.image'
+require 'plugins.latex'
 
 -- ============================================================
 -- Optional Kickstart modules
