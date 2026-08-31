@@ -12,3 +12,6 @@ spell/
 nvim-pack-lock.json
 
 .DS_Store
+
+lua/matugen.lua
+lua/integrations/matugen.lua
