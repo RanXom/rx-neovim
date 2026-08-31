@@ -72,3 +72,7 @@ vim.g.maplocalleader = ' '
   -- instead raise a dialog asking if you wish to save the current file(s)
   -- See `:help 'confirm'`
   vim.o.confirm = true
+
+  -- Conceal level for markdown rendering (render-markdown.nvim)
+  -- See `:help 'conceallevel'`
+  vim.o.conceallevel = 2
