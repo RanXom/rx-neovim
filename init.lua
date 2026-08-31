@@ -100,6 +100,7 @@ require 'plugins.lsp'
 require 'plugins.formatting'
 require 'plugins.completion'
 require 'plugins.treesitter'
+require 'plugins.obsidian'
 
 -- ============================================================
 -- Optional Kickstart modules
