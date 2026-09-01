@@ -26,6 +26,20 @@ vim.ui_attach(ns, {ext_cmdline = true, ext_messages = true}, function(event, ...
       text = text .. chunk[2]
     end
     
+    if text:match("E21: Cannot make changes") then
+      _G.ignore_next_return_prompt = true
+      return
+    end
+
+    if kind == 'return_prompt' and _G.ignore_next_return_prompt then
+      _G.ignore_next_return_prompt = false
+      -- Automatically press ENTER to silently bypass the error state
+      vim.schedule(function()
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<CR>", true, false, true), "n", false)
+      end)
+      return
+    end
+
     if kind == 'confirm' or kind == 'confirm_sub' or kind == 'return_prompt' then
       -- Route prompts to the statusline
       _G.custom_cmdline = { text = text, firstc = '', pos = 0, prompt = '' }
