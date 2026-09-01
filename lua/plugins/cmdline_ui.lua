@@ -61,11 +61,12 @@ vim.ui_attach(ns, {ext_cmdline = true, ext_messages = true}, function(event, ...
       vim.schedule(function() vim.cmd('redrawstatus') end)
     else
       -- Route normal messages to snacks.notifier if available and not empty
-      if text ~= "" then
+      if text ~= "" and text ~= " " then
         vim.schedule(function()
           local ok, snacks = pcall(require, 'snacks')
           if ok and snacks.notifier then
-            snacks.notifier.notify(text, "info", { title = "Neovim" })
+            local msg_id = kind ~= "" and ("nvim_msg_" .. kind) or nil
+            snacks.notifier.notify(text, "info", { title = "Neovim", id = msg_id })
           end
         end)
       end
