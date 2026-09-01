@@ -116,8 +116,22 @@ local gh = require('core.utils').gh
   ---@diagnostic disable-next-line: duplicate-set-field
   statusline.section_location = function() return '%2l:%-2v' end
 
+  -- Monkey-patch base16-colorscheme so we know when matugen applies colors
+  local ok, b16 = pcall(require, 'base16-colorscheme')
+  if ok then
+    local orig_setup = b16.setup
+    b16.setup = function(...)
+      orig_setup(...)
+      -- Fire custom event so statusline knows to update
+      vim.schedule(function()
+        vim.api.nvim_exec_autocmds("User", { pattern = "Base16ColorschemeLoaded", modeline = false })
+      end)
+    end
+  end
+
   -- Apply Matugen colors and exact transparency for the middle
-  vim.api.nvim_create_autocmd("ColorScheme", {
+  vim.api.nvim_create_autocmd("User", {
+    pattern = "Base16ColorschemeLoaded",
     callback = function()
       -- Get matugen colors
       local ok, b16 = pcall(require, 'base16-colorscheme')
