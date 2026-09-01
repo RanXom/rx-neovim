@@ -572,7 +572,7 @@ H.modes = setmetatable({
   [CTRL_S] = { long = 'S-Block',  short = 'S-B', hl = 'MiniStatuslineModeVisual' },
   ['i']    = { long = 'Insert',   short = 'I',   hl = 'MiniStatuslineModeInsert' },
   ['R']    = { long = 'Replace',  short = 'R',   hl = 'MiniStatuslineModeReplace' },
-  ['c']    = { long = ':',        short = ':',   hl = 'MiniStatuslineModeCommand' },
+  ['c']    = { long = 'Command',  short = 'C',   hl = 'MiniStatuslineModeCommand' },
   ['r']    = { long = 'Prompt',   short = 'P',   hl = 'MiniStatuslineModeOther' },
   ['!']    = { long = 'Shell',    short = 'Sh',  hl = 'MiniStatuslineModeOther' },
   ['t']    = { long = 'Terminal', short = 'T',   hl = 'MiniStatuslineModeOther' },
@@ -619,6 +619,12 @@ H.default_content_active = function()
     local prompt = _G.custom_cmdline.prompt or ""
     local firstc = _G.custom_cmdline.firstc or ""
     local text = _G.custom_cmdline.text or ""
+    
+    -- The user explicitly requested NOT to show the leading ':' while typing
+    if firstc == ':' then
+      firstc = ''
+    end
+    
     filename = prompt .. firstc .. text
 
     -- We can also simulate a blinking cursor or position if we want,
