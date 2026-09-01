@@ -116,23 +116,39 @@ local gh = require('core.utils').gh
   ---@diagnostic disable-next-line: duplicate-set-field
   statusline.section_location = function() return '%2l:%-2v' end
 
-  -- Keep background of everything else, but make the middle part transparent
+  -- Apply Matugen colors and exact transparency for the middle
   vim.api.nvim_create_autocmd("ColorScheme", {
     callback = function()
-      local sl_hl = vim.api.nvim_get_hl(0, { name = "StatusLine", link = false })
-      local bg = sl_hl.bg
-      local fg = sl_hl.fg
-      
-      -- If StatusLine has a background, preserve it for the outer components
-      if bg then
-        vim.api.nvim_set_hl(0, "MiniStatuslineDevinfo", { bg = bg, fg = fg })
-        vim.api.nvim_set_hl(0, "MiniStatuslineFileinfo", { bg = bg, fg = fg })
+      -- Get matugen colors
+      local ok, b16 = pcall(require, 'base16-colorscheme')
+      if not ok or not b16.colors then return end
+      local c = b16.colors
+
+      local set_hl = function(name, fg, bg, bold)
+        vim.api.nvim_set_hl(0, name, { fg = fg, bg = bg, bold = bold })
       end
-      
-      -- Force the middle section and global StatusLine to be transparent
-      vim.api.nvim_set_hl(0, "StatusLine", { bg = "NONE" })
-      vim.api.nvim_set_hl(0, "StatusLineNC", { bg = "NONE" })
-      vim.api.nvim_set_hl(0, "MiniStatuslineFilename", { bg = "NONE", fg = fg or "#cdd6f4" })
+
+      -- Solid background for side elements
+      local side_bg = c.base01
+      local mode_fg = c.base00
+      local text_fg = c.base05
+
+      -- Left side (Modes)
+      set_hl('MiniStatuslineModeNormal',  mode_fg, c.base0D, true)
+      set_hl('MiniStatuslineModeInsert',  mode_fg, c.base0B, true)
+      set_hl('MiniStatuslineModeVisual',  mode_fg, c.base0E, true)
+      set_hl('MiniStatuslineModeReplace', mode_fg, c.base08, true)
+      set_hl('MiniStatuslineModeCommand', mode_fg, c.base09, true)
+      set_hl('MiniStatuslineModeOther',   mode_fg, c.base0F, true)
+
+      -- Left/Right inner panels
+      set_hl('MiniStatuslineDevinfo',  text_fg, side_bg, false)
+      set_hl('MiniStatuslineFileinfo', text_fg, side_bg, false)
+
+      -- Middle part (Filename + empty space) MUST be perfectly transparent
+      set_hl('MiniStatuslineFilename', text_fg, "NONE", true)
+      vim.api.nvim_set_hl(0, "StatusLine",   { bg = "NONE", fg = "NONE" })
+      vim.api.nvim_set_hl(0, "StatusLineNC", { bg = "NONE", fg = "NONE" })
     end
   })
 
