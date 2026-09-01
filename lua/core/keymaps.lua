@@ -70,3 +70,7 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 
 
 
+
+-- Stay in visual mode when indenting
+vim.keymap.set('v', '<', '<gv', { desc = 'Indent left and stay in visual mode' })
+vim.keymap.set('v', '>', '>gv', { desc = 'Indent right and stay in visual mode' })
