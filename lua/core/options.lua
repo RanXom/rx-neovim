@@ -80,3 +80,6 @@ vim.g.maplocalleader = ' '
   -- Single line bottom UI (statusline and command line share the same line)
   vim.o.laststatus = 3
   vim.o.cmdheight = 0
+
+  -- Hide the '~' characters at the end of the buffer
+  vim.opt.fillchars:append { eob = " " }
