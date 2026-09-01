@@ -627,6 +627,10 @@ H.default_content_active = function()
     
     filename = prompt .. firstc .. text
 
+    -- Escape '%' so it renders literally instead of being interpreted
+    -- as a statusline format code (e.g. %y = filetype, %f = filename)
+    filename = filename:gsub('%%', '%%%%')
+
     -- We can also simulate a blinking cursor or position if we want,
     -- but for simplicity, just appending a block cursor works
     filename = filename .. "█"
