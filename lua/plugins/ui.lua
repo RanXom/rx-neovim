@@ -116,7 +116,25 @@ local gh = require('core.utils').gh
   ---@diagnostic disable-next-line: duplicate-set-field
   statusline.section_location = function() return '%2l:%-2v' end
 
-
+  -- Keep background of everything else, but make the middle part transparent
+  vim.api.nvim_create_autocmd("ColorScheme", {
+    callback = function()
+      local sl_hl = vim.api.nvim_get_hl(0, { name = "StatusLine", link = false })
+      local bg = sl_hl.bg
+      local fg = sl_hl.fg
+      
+      -- If StatusLine has a background, preserve it for the outer components
+      if bg then
+        vim.api.nvim_set_hl(0, "MiniStatuslineDevinfo", { bg = bg, fg = fg })
+        vim.api.nvim_set_hl(0, "MiniStatuslineFileinfo", { bg = bg, fg = fg })
+      end
+      
+      -- Force the middle section and global StatusLine to be transparent
+      vim.api.nvim_set_hl(0, "StatusLine", { bg = "NONE" })
+      vim.api.nvim_set_hl(0, "StatusLineNC", { bg = "NONE" })
+      vim.api.nvim_set_hl(0, "MiniStatuslineFilename", { bg = "NONE", fg = fg or "#cdd6f4" })
+    end
+  })
 
   -- ... and there is more!
   --  Check out: https://github.com/nvim-mini/mini.nvim
