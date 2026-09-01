@@ -598,17 +598,20 @@ H.default_content_active = function()
   local search        = MiniStatusline.section_searchcount({ trunc_width = 75 })
   H.use_icons = nil
 
-  -- Only show info if a real file is opened
-  local is_file = vim.fn.expand('%') ~= '' and vim.bo.filetype ~= 'snacks_dashboard'
-  if not is_file then
+  -- Determine if we should hide file-specific info
+  local buf = vim.api.nvim_get_current_buf()
+  local is_dashboard = vim.bo[buf].filetype == 'snacks_dashboard'
+  local is_empty = vim.api.nvim_buf_get_name(buf) == '' and vim.bo[buf].buftype == ''
+
+  if is_dashboard or is_empty then
     git = ''
     diff = ''
     diagnostics = ''
     lsp = ''
     filename = ''
     fileinfo = ''
-    location = ''
-    search = ''
+    -- Note: We intentionally keep `location` (which looks like 10:25 time) 
+    -- and `search` visible as requested.
   end
 
   -- Inject command line if active
