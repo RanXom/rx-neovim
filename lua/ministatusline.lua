@@ -572,7 +572,7 @@ H.modes = setmetatable({
   [CTRL_S] = { long = 'S-Block',  short = 'S-B', hl = 'MiniStatuslineModeVisual' },
   ['i']    = { long = 'Insert',   short = 'I',   hl = 'MiniStatuslineModeInsert' },
   ['R']    = { long = 'Replace',  short = 'R',   hl = 'MiniStatuslineModeReplace' },
-  ['c']    = { long = 'Command',  short = 'C',   hl = 'MiniStatuslineModeCommand' },
+  ['c']    = { long = ':',        short = ':',   hl = 'MiniStatuslineModeCommand' },
   ['r']    = { long = 'Prompt',   short = 'P',   hl = 'MiniStatuslineModeOther' },
   ['!']    = { long = 'Shell',    short = 'Sh',  hl = 'MiniStatuslineModeOther' },
   ['t']    = { long = 'Terminal', short = 'T',   hl = 'MiniStatuslineModeOther' },
