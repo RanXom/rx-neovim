@@ -598,13 +598,26 @@ H.default_content_active = function()
   local search        = MiniStatusline.section_searchcount({ trunc_width = 75 })
   H.use_icons = nil
 
+  -- Only show info if a real file is opened
+  local is_file = vim.fn.expand('%') ~= '' and vim.bo.filetype ~= 'snacks_dashboard'
+  if not is_file then
+    git = ''
+    diff = ''
+    diagnostics = ''
+    lsp = ''
+    filename = ''
+    fileinfo = ''
+    location = ''
+    search = ''
+  end
+
   -- Inject command line if active
   if _G.custom_cmdline then
     local prompt = _G.custom_cmdline.prompt or ""
     local firstc = _G.custom_cmdline.firstc or ""
     local text = _G.custom_cmdline.text or ""
     filename = prompt .. firstc .. text
-    
+
     -- We can also simulate a blinking cursor or position if we want,
     -- but for simplicity, just appending a block cursor works
     filename = filename .. "█"
