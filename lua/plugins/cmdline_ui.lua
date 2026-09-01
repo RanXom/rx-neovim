@@ -8,7 +8,9 @@ vim.ui_attach(ns, {ext_cmdline = true, ext_messages = true}, function(event, ...
     for _, chunk in ipairs(content) do
       text = text .. chunk[2]
     end
-    _G.custom_cmdline = { text = text, firstc = firstc, pos = pos, prompt = prompt }
+    -- Preserve the question from a preceding 'confirm' msg_show event
+    local prev_question = _G.custom_cmdline and _G.custom_cmdline.question or nil
+    _G.custom_cmdline = { text = text, firstc = firstc, pos = pos, prompt = prompt, question = prev_question }
     _G.ignore_next_return_prompt = false
     vim.schedule(function() vim.cmd('redrawstatus') end)
   elseif event == 'cmdline_hide' then
