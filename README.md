@@ -1,42 +1,42 @@
 # rx-neovim
 
-A personal, highly customized Neovim configuration built for performance, modularity, and integration with modern terminal environments. This configuration was originally evolved from [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim).
+Personal Neovim configuration evolved from [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim).
 
 ## Overview
 
-This setup is designed for developers who want a powerful, IDE-like experience within the terminal. It features a completely custom, unified statusline that absorbs the command line and notifications, rich markdown and image rendering, and a robust LSP configuration.
+Provides a modular Neovim environment using native package management (`vim.pack.add`). Core capabilities include a unified statusline, LSP integration, and rich markdown rendering.
 
 ### Integrations
 
-*   **rx-tmux**: This Neovim configuration is designed to be optionally paired with `rx-tmux` for a seamless terminal multiplexer and editor workflow.
-*   **Noctalia (Matugen)**: The colorscheme is dynamically generated. It requires **Noctalia v5** (or Matugen) as a dependency to generate the base16 colors dynamically. If you prefer not to use Noctalia, you can easily hardcode your preferred colorscheme in the UI configuration.
+*   **[rx-tmux](https://github.com/RanXom/rx-tmux)**: Optionally pairs with rx-tmux for a terminal multiplexer workflow.
+*   **Noctalia (Matugen)**: Requires Noctalia v5 (or Matugen) to generate base16 colors dynamically. Colors can alternatively be hardcoded in the UI configuration.
 
 ## Features & Plugins
 
-This configuration leverages Neovim's native `vim.pack.add` for package management—avoiding the overhead of external package managers like lazy.nvim while maintaining a modular structure.
+Leverages Neovim's native `vim.pack.add` for package management, avoiding external package managers like lazy.nvim while maintaining a modular structure.
 
 ### Core Plugins
-*   **Telescope**: Extensible fuzzy finder for files, LSP references, diagnostics, and help tags.
-*   **blink.cmp & LuaSnip**: Fast, lightweight autocompletion engine paired with robust snippet support.
-*   **nvim-lspconfig, Mason & conform.nvim**: Automated LSP installation, configuration, and format-on-save mechanics.
-*   **nvim-treesitter**: Advanced syntax highlighting, indentation, and folding.
-*   **nvim-autopairs**: Automatic bracket pairing and intelligent `<CR>` formatting.
+*   **Telescope**: Fuzzy finder for files, LSP references, diagnostics, and help tags.
+*   **blink.cmp & LuaSnip**: Autocompletion engine and snippet support.
+*   **nvim-lspconfig, Mason & conform.nvim**: Automated LSP installation, configuration, and format-on-save.
+*   **nvim-treesitter**: Syntax highlighting, indentation, and folding.
+*   **nvim-autopairs**: Automatic bracket pairing and `<CR>` formatting.
 
 ### UI & Aesthetics
-*   **mini.nvim (statusline)**: A heavily customized, single-line UI. The command line (`:`) and confirm prompts are seamlessly injected into the statusline, while general messages are routed to a notification manager.
-*   **snacks.nvim**: Provides a clean dashboard and a unified notification system.
-*   **which-key.nvim**: Displays available keybindings as you type, aiding in discovery.
-*   **gitsigns.nvim**: Unobtrusive git integration within the sign column.
+*   **mini.nvim (statusline)**: Single-line UI. The command line (`:`) and confirm prompts are injected into the statusline.
+*   **snacks.nvim**: Dashboard and unified notification system.
+*   **which-key.nvim**: Displays available keybindings as you type.
+*   **gitsigns.nvim**: Git integration within the sign column.
 
 ### Markdown & Note-taking
-*   **obsidian.nvim**: Full integration with Obsidian vaults for note-taking and knowledge management.
-*   **render-markdown.nvim**: Rich, concealed markdown display within the buffer.
+*   **obsidian.nvim**: Integration with Obsidian vaults for note-taking.
+*   **render-markdown.nvim**: Concealed markdown display within the buffer.
 *   **image.nvim**: Inline image rendering using the Kitty graphics protocol.
-*   **render-latex.nvim**: Renders display math blocks as high-fidelity images.
+*   **render-latex.nvim**: Renders display math blocks as images.
 
 ## Architecture
 
-The configuration is strictly modular to keep concerns separated:
+The configuration is modular to keep concerns separated:
 
 ```text
 .
@@ -66,16 +66,16 @@ The configuration is strictly modular to keep concerns separated:
 
 The configuration uses the `<Space>` key as the leader key (`<leader>`). 
 
-If you are ever unsure of a keybinding or need to search for documentation:
-*   Press `<leader>sh` (Search Help) to open Telescope and search through all available Neovim help tags.
-*   Press `<leader>sk` (Search Keymaps) to search through all currently active keybindings.
-*   Simply press `<leader>` and wait a moment; `which-key.nvim` will appear at the bottom of the screen to guide you through the available keymap groups.
+To search for documentation or keybindings:
+*   Press `<leader>sh` (Search Help) to open Telescope and search through all Neovim help tags.
+*   Press `<leader>sk` (Search Keymaps) to search active keybindings.
+*   Press `<leader>` and wait; `which-key.nvim` will display available keymap groups.
 
-### Notable Custom Mappings
+### Custom Mappings
 *   **Splits**: `<leader>-` for horizontal split, `<leader>|` for vertical split.
 *   **LSP Navigation**: `grd` (definition), `grr` (references), `gri` (implementation), `grt` (type definition).
-*   **Visual Indentation**: `<` and `>` in visual mode persistently retain selection for repeated indenting.
+*   **Visual Indentation**: `<` and `>` in visual mode retain selection for repeated indenting.
 
 ## Acknowledgements
 
-This configuration is built upon the incredible foundation provided by [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim). It has since been heavily modified to use native package management and a custom UI paradigm.
+Built upon [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim), modified to use native package management and a custom UI.
