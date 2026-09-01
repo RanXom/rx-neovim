@@ -8,6 +8,10 @@ local gh = require('core.utils').gh
 vim.pack.add { gh 'folke/snacks.nvim' }
 
 require("snacks").setup({
+  notifier = {
+    enabled = true,
+    timeout = 3000,
+  },
   dashboard = {
     enabled = true,
     -- Customize your dashboard here. 
