@@ -104,6 +104,8 @@ require 'plugins.obsidian'
 require 'plugins.markdown'
 require 'plugins.image'
 require 'plugins.latex'
+require 'plugins.cmdline_ui'
+require 'plugins.snacks'
 
 -- ============================================================
 -- Optional Kickstart modules

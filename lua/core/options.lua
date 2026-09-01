@@ -76,3 +76,10 @@ vim.g.maplocalleader = ' '
   -- Conceal level for markdown rendering (render-markdown.nvim)
   -- See `:help 'conceallevel'`
   vim.o.conceallevel = 2
+
+  -- Single line bottom UI (statusline and command line share the same line)
+  vim.o.laststatus = 3
+  vim.o.cmdheight = 0
+
+  -- Hide the '~' characters at the end of the buffer
+  vim.opt.fillchars:append { eob = " " }
