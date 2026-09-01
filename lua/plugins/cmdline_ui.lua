@@ -42,13 +42,20 @@ vim.ui_attach(ns, {ext_cmdline = true, ext_messages = true}, function(event, ...
     end
 
     if kind == 'confirm' or kind == 'confirm_sub' or kind == 'return_prompt' then
-      local new_text = text
-      -- Combine main confirm message with its sub-choices (Y/n)
-      if kind == 'confirm_sub' and _G.custom_cmdline and _G.custom_cmdline.firstc == '' then
-        new_text = _G.custom_cmdline.text .. " " .. text
+      if kind == 'confirm' then
+        -- First message: the question itself ("Save changes to foo?")
+        -- Store it separately; choices will arrive as confirm_sub next
+        _G.custom_cmdline = { question = text, text = '', firstc = '', pos = 0, prompt = '' }
+      elseif kind == 'confirm_sub' and _G.custom_cmdline and _G.custom_cmdline.question then
+        -- Second message: the choices ("[Y]es, (N)o, (C)ancel:")
+        _G.custom_cmdline.text = text
+      elseif _G.custom_cmdline and _G.custom_cmdline.question then
+        -- return_prompt or other sub-message: append to choices
+        _G.custom_cmdline.text = (_G.custom_cmdline.text or '') .. text
+      else
+        -- Fallback for unexpected prompts without a preceding confirm
+        _G.custom_cmdline = { text = text, firstc = '', pos = 0, prompt = '' }
       end
-      
-      _G.custom_cmdline = { text = new_text, firstc = '', pos = 0, prompt = '' }
       vim.schedule(function() vim.cmd('redrawstatus') end)
     else
       -- Route normal messages to snacks.notifier if available and not empty

@@ -614,11 +614,14 @@ H.default_content_active = function()
     -- and `search` visible as requested.
   end
 
+  local question = ''
+
   -- Inject command line if active
   if _G.custom_cmdline then
     local prompt = _G.custom_cmdline.prompt or ""
     local firstc = _G.custom_cmdline.firstc or ""
     local text = _G.custom_cmdline.text or ""
+    question = _G.custom_cmdline.question or ""
     
     -- The user explicitly requested NOT to show the leading ':' while typing
     if firstc == ':' then
@@ -630,10 +633,17 @@ H.default_content_active = function()
     -- Escape '%' so it renders literally instead of being interpreted
     -- as a statusline format code (e.g. %y = filetype, %f = filename)
     filename = filename:gsub('%%', '%%%%')
+    question = question:gsub('%%', '%%%%')
 
-    -- We can also simulate a blinking cursor or position if we want,
-    -- but for simplicity, just appending a block cursor works
+    -- Append block cursor
     filename = filename .. "█"
+
+    -- Hide git/diff/diagnostics/lsp in command and prompt modes
+    git = ''
+    diff = ''
+    diagnostics = ''
+    lsp = ''
+    fileinfo = ''
   end
 
   -- Usage of `MiniStatusline.combine_groups()` ensures highlighting and
@@ -642,6 +652,7 @@ H.default_content_active = function()
   return MiniStatusline.combine_groups({
     { hl = mode_hl,                  strings = { mode } },
     { hl = 'MiniStatuslineDevinfo',  strings = { git, diff, diagnostics, lsp } },
+    { hl = 'MiniStatuslineFileinfo', strings = { question ~= '' and question or nil } },
     '%<', -- Mark general truncate point
     { hl = 'MiniStatuslineFilename', strings = { filename } },
     '%=', -- End left alignment
