@@ -37,3 +37,12 @@ require("snacks").setup({
     },
   },
 })
+
+-- snacks.dashboard forces the statusline to hide (laststatus = 0).
+-- We force it back to 3 whenever the dashboard opens.
+vim.api.nvim_create_autocmd("User", {
+  pattern = "SnacksDashboardOpened",
+  callback = function()
+    vim.o.laststatus = 3
+  end,
+})
