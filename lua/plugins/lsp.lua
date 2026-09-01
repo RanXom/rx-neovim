@@ -108,16 +108,20 @@ vim.api.nvim_create_autocmd('LspAttach', {
 --  See `:help lsp-config` for information about keys and how to configure
 ---@type table<string, vim.lsp.Config>
 local servers = {
-  -- clangd = {},
-  -- gopls = {},
-  -- pyright = {},
-  -- rust_analyzer = {},
-  --
-  -- Some languages (like typescript) have entire language plugins that can be useful:
-  --    https://github.com/pmizio/typescript-tools.nvim
-  --
-  -- But for many setups, the LSP (`ts_ls`) will work just fine
-  -- ts_ls = {},
+  -- C and C++
+  clangd = {},
+  
+  -- Go
+  gopls = {},
+  
+  -- Rust
+  rust_analyzer = {},
+  
+  -- Typescript, React, Node, Express
+  ts_ls = {},
+  
+  -- Java and SpringBoot
+  jdtls = {},
 
   stylua = {}, -- Used to format Lua code
 
