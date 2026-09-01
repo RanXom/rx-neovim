@@ -9,9 +9,11 @@ vim.ui_attach(ns, {ext_cmdline = true, ext_messages = true}, function(event, ...
       text = text .. chunk[2]
     end
     _G.custom_cmdline = { text = text, firstc = firstc, pos = pos, prompt = prompt }
+    _G.ignore_next_return_prompt = false
     vim.schedule(function() vim.cmd('redrawstatus') end)
   elseif event == 'cmdline_hide' then
     _G.custom_cmdline = nil
+    _G.ignore_next_return_prompt = false
     vim.schedule(function() vim.cmd('redrawstatus') end)
   elseif event == 'cmdline_pos' then
     local pos, level = ...
