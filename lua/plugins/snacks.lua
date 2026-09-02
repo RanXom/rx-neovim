@@ -11,7 +11,8 @@ require("snacks").setup({
   notifier = {
     enabled = true,
     timeout = 3000,
-    top_down = false, -- place notifications from bottom to top
+    top_down = false,
+    style = "minimal",
   },
   dashboard = {
     enabled = true,
