@@ -573,14 +573,14 @@ H.modes = setmetatable({
   ['i']    = { long = 'Insert',   short = 'I',   hl = 'MiniStatuslineModeInsert' },
   ['R']    = { long = 'Replace',  short = 'R',   hl = 'MiniStatuslineModeReplace' },
   ['c']    = { long = 'Command',  short = 'C',   hl = 'MiniStatuslineModeCommand' },
-  ['r']    = { long = 'Prompt',   short = 'P',   hl = 'MiniStatuslineModeNormal' },
-  ['r?']   = { long = 'Confirm',  short = 'C',   hl = 'MiniStatuslineModeNormal' },
-  ['!']    = { long = 'Shell',    short = 'Sh',  hl = 'MiniStatuslineModeNormal' },
-  ['t']    = { long = 'Terminal', short = 'T',   hl = 'MiniStatuslineModeNormal' },
+  ['r']    = { long = 'Prompt',   short = 'PMT', hl = 'DiffAdd' },
+  ['r?']   = { long = 'Confirm',  short = 'CNF', hl = 'DiffAdd' },
+  ['!']    = { long = 'Shell',    short = 'SHL', hl = 'DiffAdd' },
+  ['t']    = { long = 'Terminal', short = 'TRM', hl = 'DiffAdd' },
 }, {
   -- By default return 'Unknown' but this shouldn't be needed
   __index = function()
-    return   { long = 'Unknown',  short = 'U',   hl = 'MiniStatuslineModeNormal' }
+    return   { long = 'Unknown',  short = 'UNK', hl = 'DiffAdd' }
   end,
 })
 
