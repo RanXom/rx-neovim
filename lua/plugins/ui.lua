@@ -154,17 +154,17 @@ local gh = require('core.utils').gh
       set_hl('MiniStatuslineModeCommand', mode_fg, c.base09, true)
       set_hl('MiniStatuslineModeOther',   mode_fg, c.base0E, true)
 
-      -- Solid block notifications (Snacks)
+      -- Solid block notifications (Snacks) - Unified color for all types
       set_hl('SnacksNotifierInfo',  mode_fg, c.base0D, false)
-      set_hl('SnacksNotifierWarn',  mode_fg, c.base09, false)
-      set_hl('SnacksNotifierError', mode_fg, c.base08, false)
-      set_hl('SnacksNotifierDebug', mode_fg, c.base03, false)
-      set_hl('SnacksNotifierTrace', mode_fg, c.base03, false)
+      set_hl('SnacksNotifierWarn',  mode_fg, c.base0D, false)
+      set_hl('SnacksNotifierError', mode_fg, c.base0D, false)
+      set_hl('SnacksNotifierDebug', mode_fg, c.base0D, false)
+      set_hl('SnacksNotifierTrace', mode_fg, c.base0D, false)
       set_hl('SnacksNotifierIconInfo',  mode_fg, c.base0D, false)
-      set_hl('SnacksNotifierIconWarn',  mode_fg, c.base09, false)
-      set_hl('SnacksNotifierIconError', mode_fg, c.base08, false)
-      set_hl('SnacksNotifierIconDebug', mode_fg, c.base03, false)
-      set_hl('SnacksNotifierIconTrace', mode_fg, c.base03, false)
+      set_hl('SnacksNotifierIconWarn',  mode_fg, c.base0D, false)
+      set_hl('SnacksNotifierIconError', mode_fg, c.base0D, false)
+      set_hl('SnacksNotifierIconDebug', mode_fg, c.base0D, false)
+      set_hl('SnacksNotifierIconTrace', mode_fg, c.base0D, false)
 
       -- Left/Right inner panels
       set_hl('MiniStatuslineDevinfo',  text_fg, side_bg, false)

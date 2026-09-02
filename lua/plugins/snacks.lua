@@ -12,9 +12,12 @@ require("snacks").setup({
     enabled = true,
     timeout = 3000,
     top_down = false,
+    margin = { top = 0, right = 0, bottom = 0 },
     style = function(buf, notif, ctx)
       -- Remove borders to keep it perfectly blocky
       ctx.opts.border = "none"
+      -- Disable markdown filetype so indented lines aren't parsed as code blocks
+      vim.bo[buf].filetype = ""
       
       -- Combine icon and message tightly
       local icon = notif.icon or ""
