@@ -39,6 +39,12 @@ vim.ui_attach(ns, {ext_cmdline = true, ext_messages = true}, function(event, ...
       return
     end
 
+    -- Suppress the redundant "E325: ATTENTION" message since the confirm prompt 
+    -- right after it will display the full swap file details in a persistent popup.
+    if text:match("^E325: ATTENTION") then
+      return
+    end
+
     if kind == 'return_prompt' and _G.ignore_next_return_prompt then
       _G.ignore_next_return_prompt = false
       vim.schedule(function()
@@ -54,7 +60,9 @@ vim.ui_attach(ns, {ext_cmdline = true, ext_messages = true}, function(event, ...
         -- If the message is multi-line (like swap file warnings), show a persistent popup
         -- and only keep the first line for the statusline.
         if text:find('\n') then
-          question = text:match("([^\n]+)") .. " [...]"
+          -- The question is huge, so we show it in a popup.
+          -- Don't duplicate the text in the status bar!
+          question = ""
           vim.schedule(function()
             local ok, snacks = pcall(require, 'snacks')
             if ok and snacks.notifier then
