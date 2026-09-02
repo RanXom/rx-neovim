@@ -18,7 +18,7 @@ require("snacks").setup({
       ctx.opts.border = "none"
       -- Disable markdown filetype so indented lines aren't parsed as code blocks
       vim.bo[buf].filetype = ""
-      
+
       -- Combine icon and message tightly
       local icon = notif.icon or ""
       local msg = notif.msg or ""
@@ -30,9 +30,9 @@ require("snacks").setup({
           lines[i] = "   " .. line .. " "
         end
       end
-      
+
       vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-      
+
       -- Highlight the icon specifically, the rest inherits Normal (ctx.hl.msg)
       -- We also forcefully apply ctx.hl.msg via extmarks to every line to guarantee 
       -- NO rogue syntax or markdown highlights can ever make the text white.
@@ -43,7 +43,7 @@ require("snacks").setup({
           priority = 100,
         })
       end
-      
+
       -- Overlay the icon highlight
       if icon ~= "" then
         vim.api.nvim_buf_set_extmark(buf, ctx.ns, 0, 1, {
@@ -61,12 +61,14 @@ require("snacks").setup({
     preset = {
       -- You can change the header text, art, or keys here:
       header = [[
-    ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗
-    ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║
-    ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║
-    ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║
-    ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║
-    ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ ランサム
+██████╗  █████╗ ███╗   ██╗██╗  ██╗ ██████╗ ███╗   ███╗
+██╔══██╗██╔══██╗████╗  ██║╚██╗██╔╝██╔═══██╗████╗ ████║
+██████╔╝███████║██╔██╗ ██║ ╚███╔╝ ██║   ██║██╔████╔██║
+██╔══██╗██╔══██║██║╚██╗██║ ██╔██╗ ██║   ██║██║╚██╔╝██║
+██║  ██║██║  ██║██║ ╚████║██╔╝ ██╗╚██████╔╝██║ ╚═╝ ██║
+╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝ ╚═════╝ ╚═╝     ╚═╝
+ ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
       ]],
       -- Example custom keys
       -- keys = {
