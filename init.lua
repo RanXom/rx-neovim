@@ -21,6 +21,7 @@ require 'plugins.image'
 require 'plugins.latex'
 require 'plugins.cmdline_ui'
 require 'plugins.snacks'
+require 'plugins.web-tools'
 
 -- ============================================================
 -- Optional Kickstart modules
