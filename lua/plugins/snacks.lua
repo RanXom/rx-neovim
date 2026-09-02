@@ -21,7 +21,8 @@ require("snacks").setup({
       
       -- Combine icon and message tightly
       local icon = notif.icon or ""
-      local lines = vim.split(notif.msg, "\n")
+      local msg = notif.msg or ""
+      local lines = vim.split(msg, "\n")
       for i, line in ipairs(lines) do
         if i == 1 then
           lines[i] = " " .. icon .. " " .. line .. " "
@@ -37,7 +38,7 @@ require("snacks").setup({
       -- NO rogue syntax or markdown highlights can ever make the text white.
       for i = 0, #lines - 1 do
         vim.api.nvim_buf_set_extmark(buf, ctx.ns, i, 0, {
-          end_col = -1,
+          end_col = #lines[i + 1],
           hl_group = ctx.hl.msg,
           priority = 100,
         })
