@@ -83,4 +83,3 @@ vim.g.maplocalleader = ' '
 
   -- Hide the '~' characters at the end of the buffer
   vim.opt.fillchars:append { eob = " " }
-vim.opt.termguicolors = true
