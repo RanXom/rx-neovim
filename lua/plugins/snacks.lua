@@ -33,10 +33,24 @@ require("snacks").setup({
       vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
       
       -- Highlight the icon specifically, the rest inherits Normal (ctx.hl.msg)
-      vim.api.nvim_buf_set_extmark(buf, ctx.ns, 0, 1, {
-        end_col = 1 + #icon,
-        hl_group = ctx.hl.icon,
-      })
+      -- We also forcefully apply ctx.hl.msg via extmarks to every line to guarantee 
+      -- NO rogue syntax or markdown highlights can ever make the text white.
+      for i = 0, #lines - 1 do
+        vim.api.nvim_buf_set_extmark(buf, ctx.ns, i, 0, {
+          end_col = -1,
+          hl_group = ctx.hl.msg,
+          priority = 100,
+        })
+      end
+      
+      -- Overlay the icon highlight
+      if icon ~= "" then
+        vim.api.nvim_buf_set_extmark(buf, ctx.ns, 0, 1, {
+          end_col = 1 + #icon,
+          hl_group = ctx.hl.icon,
+          priority = 101,
+        })
+      end
     end,
   },
   dashboard = {
