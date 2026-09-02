@@ -12,7 +12,29 @@ require("snacks").setup({
     enabled = true,
     timeout = 3000,
     top_down = false,
-    style = "minimal",
+    style = function(buf, notif, ctx)
+      -- Remove borders to keep it perfectly blocky
+      ctx.opts.border = "none"
+      
+      -- Combine icon and message tightly
+      local icon = notif.icon or ""
+      local lines = vim.split(notif.msg, "\n")
+      for i, line in ipairs(lines) do
+        if i == 1 then
+          lines[i] = " " .. icon .. " " .. line .. " "
+        else
+          lines[i] = "   " .. line .. " "
+        end
+      end
+      
+      vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+      
+      -- Highlight the icon specifically, the rest inherits Normal (ctx.hl.msg)
+      vim.api.nvim_buf_set_extmark(buf, ctx.ns, 0, 1, {
+        end_col = 1 + #icon,
+        hl_group = ctx.hl.icon,
+      })
+    end,
   },
   dashboard = {
     enabled = true,
