@@ -122,10 +122,9 @@ local gh = require('core.utils').gh
     local orig_setup = b16.setup
     b16.setup = function(...)
       orig_setup(...)
-      -- Fire custom event so statusline knows to update
-      vim.schedule(function()
-        vim.api.nvim_exec_autocmds("User", { pattern = "Base16ColorschemeLoaded", modeline = false })
-      end)
+      -- Fire custom event so statusline knows to update.
+      -- Must be synchronous to avoid race conditions during blocking prompts.
+      vim.api.nvim_exec_autocmds("User", { pattern = "Base16ColorschemeLoaded", modeline = false })
     end
   end
 
@@ -153,7 +152,7 @@ local gh = require('core.utils').gh
       set_hl('MiniStatuslineModeVisual',  mode_fg, c.base0E, true)
       set_hl('MiniStatuslineModeReplace', mode_fg, c.base08, true)
       set_hl('MiniStatuslineModeCommand', mode_fg, c.base09, true)
-      set_hl('MiniStatuslineModeOther',   mode_fg, c.base0F, true)
+      set_hl('MiniStatuslineModeOther',   mode_fg, c.base0E, true)
 
       -- Left/Right inner panels
       set_hl('MiniStatuslineDevinfo',  text_fg, side_bg, false)

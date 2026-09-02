@@ -16,7 +16,11 @@ vim.ui_attach(ns, {ext_cmdline = true, ext_messages = true}, function(event, ...
   elseif event == 'cmdline_hide' then
     _G.custom_cmdline = nil
     _G.ignore_next_return_prompt = false
-    vim.schedule(function() vim.cmd('redrawstatus') end)
+    vim.schedule(function() 
+      vim.cmd('redrawstatus') 
+      local ok, snacks = pcall(require, 'snacks')
+      if ok and snacks.notifier then snacks.notifier.hide("nvim_confirm") end
+    end)
   elseif event == 'cmdline_pos' then
     local pos, level = ...
     if _G.custom_cmdline then
@@ -35,6 +39,12 @@ vim.ui_attach(ns, {ext_cmdline = true, ext_messages = true}, function(event, ...
       return
     end
 
+    -- Suppress the redundant "E325: ATTENTION" message since the confirm prompt 
+    -- right after it will display the full swap file details in a persistent popup.
+    if text:match("^E325: ATTENTION") then
+      return
+    end
+
     if kind == 'return_prompt' and _G.ignore_next_return_prompt then
       _G.ignore_next_return_prompt = false
       vim.schedule(function()
@@ -45,9 +55,22 @@ vim.ui_attach(ns, {ext_cmdline = true, ext_messages = true}, function(event, ...
 
     if kind == 'confirm' or kind == 'confirm_sub' or kind == 'return_prompt' then
       if kind == 'confirm' then
-        -- First message: the question itself ("Save changes to foo?")
-        -- Store it separately; choices will arrive as confirm_sub next
-        _G.custom_cmdline = { question = text, text = '', firstc = '', pos = 0, prompt = '' }
+        -- First message: the question itself
+        local question = text
+        -- If the message is multi-line (like swap file warnings), show a persistent popup
+        -- and only keep the first line for the statusline.
+        if text:find('\n') then
+          -- The question is huge, so we show it in a popup.
+          -- Don't duplicate the text in the status bar!
+          question = ""
+          vim.schedule(function()
+            local ok, snacks = pcall(require, 'snacks')
+            if ok and snacks.notifier then
+              snacks.notifier.notify(text, "warn", { title = "Attention", id = "nvim_confirm", timeout = 0 })
+            end
+          end)
+        end
+        _G.custom_cmdline = { question = question, text = '', firstc = '', pos = 0, prompt = '' }
       elseif kind == 'confirm_sub' and _G.custom_cmdline and _G.custom_cmdline.question then
         -- Second message: the choices ("[Y]es, (N)o, (C)ancel:")
         _G.custom_cmdline.text = text
@@ -74,7 +97,11 @@ vim.ui_attach(ns, {ext_cmdline = true, ext_messages = true}, function(event, ...
   elseif event == 'msg_clear' then
     if _G.custom_cmdline and _G.custom_cmdline.firstc == '' then
       _G.custom_cmdline = nil
-      vim.schedule(function() vim.cmd('redrawstatus') end)
+      vim.schedule(function() 
+        vim.cmd('redrawstatus') 
+        local ok, snacks = pcall(require, 'snacks')
+        if ok and snacks.notifier then snacks.notifier.hide("nvim_confirm") end
+      end)
     end
   end
 end)
