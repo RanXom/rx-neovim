@@ -103,6 +103,9 @@ local gh = require('core.utils').gh
   -- - sr)'  - [S]urround [R]eplace [)] [']
   require('mini.surround').setup()
 
+  -- Split and join arguments/arrays with gS
+  require('mini.splitjoin').setup()
+
   -- Simple and easy statusline.
   --  You could remove this setup call if you don't like it,
   --  and try some other statusline plugin
