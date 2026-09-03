@@ -119,6 +119,18 @@ local gh = require('core.utils').gh
   ---@diagnostic disable-next-line: duplicate-set-field
   statusline.section_location = function() return '%2l:%-2v' end
 
+  local orig_filename = statusline.section_filename
+  statusline.section_filename = function(args)
+    if vim.bo.filetype == 'NvimTree' then return '' end
+    return orig_filename(args)
+  end
+
+  local orig_fileinfo = statusline.section_fileinfo
+  statusline.section_fileinfo = function(args)
+    if vim.bo.filetype == 'NvimTree' then return '' end
+    return orig_fileinfo(args)
+  end
+
   -- Monkey-patch base16-colorscheme so we know when matugen applies colors
   local ok, b16 = pcall(require, 'base16-colorscheme')
   if ok then
