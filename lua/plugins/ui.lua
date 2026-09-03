@@ -103,6 +103,9 @@ local gh = require('core.utils').gh
   -- - sr)'  - [S]urround [R]eplace [)] [']
   require('mini.surround').setup()
 
+  -- Split and join arguments/arrays with gS
+  require('mini.splitjoin').setup()
+
   -- Simple and easy statusline.
   --  You could remove this setup call if you don't like it,
   --  and try some other statusline plugin
@@ -115,6 +118,18 @@ local gh = require('core.utils').gh
   -- cursor location to LINE:COLUMN
   ---@diagnostic disable-next-line: duplicate-set-field
   statusline.section_location = function() return '%2l:%-2v' end
+
+  local orig_filename = statusline.section_filename
+  statusline.section_filename = function(args)
+    if vim.bo.filetype == 'NvimTree' then return '' end
+    return orig_filename(args)
+  end
+
+  local orig_fileinfo = statusline.section_fileinfo
+  statusline.section_fileinfo = function(args)
+    if vim.bo.filetype == 'NvimTree' then return '' end
+    return orig_fileinfo(args)
+  end
 
   -- Monkey-patch base16-colorscheme so we know when matugen applies colors
   local ok, b16 = pcall(require, 'base16-colorscheme')
@@ -153,6 +168,44 @@ local gh = require('core.utils').gh
       set_hl('MiniStatuslineModeReplace', mode_fg, c.base08, true)
       set_hl('MiniStatuslineModeCommand', mode_fg, c.base09, true)
       set_hl('MiniStatuslineModeOther',   mode_fg, c.base0E, true)
+
+      -- Solid block notifications (Snacks) - Dynamic color syncing
+      vim.api.nvim_set_hl(0, 'SnacksNotifierDynamic', { link = 'MiniStatuslineModeNormal' })
+      local link_hl = function(name) vim.api.nvim_set_hl(0, name, { link = 'SnacksNotifierDynamic' }) end
+      link_hl('SnacksNotifierInfo')
+      link_hl('SnacksNotifierWarn')
+      link_hl('SnacksNotifierError')
+      link_hl('SnacksNotifierDebug')
+      link_hl('SnacksNotifierTrace')
+      link_hl('SnacksNotifierIconInfo')
+      link_hl('SnacksNotifierIconWarn')
+      link_hl('SnacksNotifierIconError')
+      link_hl('SnacksNotifierIconDebug')
+      link_hl('SnacksNotifierIconTrace')
+
+      -- Update the dynamic highlight whenever the mode changes
+      local dyn_group = vim.api.nvim_create_augroup('SnacksNotifierDynamicSync', { clear = true })
+      vim.api.nvim_create_autocmd({"ModeChanged", "BufEnter"}, {
+        group = dyn_group,
+        callback = function()
+          local mode = vim.fn.mode()
+          local map = {
+            ['n']  = 'MiniStatuslineModeNormal',
+            ['i']  = 'MiniStatuslineModeInsert',
+            ['v']  = 'MiniStatuslineModeVisual',
+            ['V']  = 'MiniStatuslineModeVisual',
+            ['\22'] = 'MiniStatuslineModeVisual',
+            ['c']  = 'MiniStatuslineModeCommand',
+            ['R']  = 'MiniStatuslineModeReplace',
+            ['r']  = 'MiniStatuslineModeOther',
+            ['r?'] = 'MiniStatuslineModeOther',
+            ['!']  = 'MiniStatuslineModeOther',
+            ['t']  = 'MiniStatuslineModeOther',
+          }
+          local hl = map[mode] or map[mode:sub(1,1)] or 'MiniStatuslineModeNormal'
+          vim.api.nvim_set_hl(0, 'SnacksNotifierDynamic', { link = hl })
+        end
+      })
 
       -- Left/Right inner panels
       set_hl('MiniStatuslineDevinfo',  text_fg, side_bg, false)

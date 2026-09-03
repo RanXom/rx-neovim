@@ -21,6 +21,10 @@ require 'plugins.image'
 require 'plugins.latex'
 require 'plugins.cmdline_ui'
 require 'plugins.snacks'
+require 'plugins.tree'
+require 'plugins.indent'
+require 'plugins.bufferline'
+require 'plugins.web-tools'
 
 -- ============================================================
 -- Optional Kickstart modules
