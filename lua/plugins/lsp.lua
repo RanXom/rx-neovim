@@ -189,6 +189,23 @@ vim.list_extend(ensure_installed, {
 
 require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
+-- ============================================================================
+-- Clangd NixOS & Competitive Programming Fix
+-- Auto-provision the global clangd config so this fix tracks in git!
+-- ============================================================================
+local clangd_config_dir = vim.fn.expand("~/.config/clangd")
+local clangd_config_file = clangd_config_dir .. "/config.yaml"
+if vim.fn.isdirectory(clangd_config_dir) == 0 then
+  vim.fn.mkdir(clangd_config_dir, "p")
+end
+if vim.fn.filereadable(clangd_config_file) == 0 then
+  local f = io.open(clangd_config_file, "w")
+  if f then
+    f:write("CompileFlags:\n  Compiler: g++\n")
+    f:close()
+  end
+end
+
 -- Configure clangd to query the NixOS system compilers so it perfectly mimics g++
 servers.clangd = {
   cmd = {
