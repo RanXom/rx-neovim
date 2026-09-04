@@ -27,6 +27,10 @@ vim.g.maplocalleader = ' '
 
   -- Enable break indent
   vim.o.breakindent = true
+  
+  -- Wrap lines at word boundaries instead of splitting words in half
+  vim.o.wrap = true
+  vim.o.linebreak = true
 
   -- Enable undo/redo changes even after closing and reopening a file
   vim.o.undofile = true
