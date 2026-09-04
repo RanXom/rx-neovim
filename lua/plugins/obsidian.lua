@@ -18,7 +18,7 @@ require('obsidian').setup {
   picker = {
     name = 'telescope.nvim',
     note_mappings = {
-      new = "<C-cr>",
+      new = "<C-Enter>",
       insert_link = "<C-l>",
     },
   },
