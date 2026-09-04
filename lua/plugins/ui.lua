@@ -215,6 +215,9 @@ local gh = require('core.utils').gh
       set_hl('MiniStatuslineFilename', text_fg, "NONE", true)
       vim.api.nvim_set_hl(0, "StatusLine",   { bg = "NONE", fg = "NONE" })
       vim.api.nvim_set_hl(0, "StatusLineNC", { bg = "NONE", fg = "NONE" })
+      
+      -- Make command-line messages transparent (fixes disjointed background on cmdheight=0)
+      vim.api.nvim_set_hl(0, "MsgArea", { bg = "NONE" })
     end
   })
 

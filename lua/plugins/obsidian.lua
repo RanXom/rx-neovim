@@ -43,10 +43,6 @@ require('obsidian').setup {
 
   new_notes_location = "notes_subdir",
 
-  completion = {
-    blink = true,
-  },
-
  -- Disable obsidian.nvim's built-in UI rendering.
   -- render-markdown.nvim handles all visual decorations instead.
   ui = {
