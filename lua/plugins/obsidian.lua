@@ -17,6 +17,10 @@ require('obsidian').setup {
 
   picker = {
     name = 'telescope.nvim',
+    note_mappings = {
+      new = "<C-cr>",
+      insert_link = "<C-l>",
+    },
   },
 
   notes_subdir = "6 - Main Notes",
@@ -26,6 +30,8 @@ require('obsidian').setup {
     date_format = "%d-%m-%Y %H:%M %p",
     time_format = "%H:%M",
   },
+
+  disable_frontmatter = true,
 
   frontmatter = {
     func = function(note)
