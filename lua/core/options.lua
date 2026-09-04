@@ -32,6 +32,12 @@ vim.g.maplocalleader = ' '
   vim.o.wrap = true
   vim.o.linebreak = true
 
+  -- Default Indentation (4 spaces)
+  -- 'guess-indent.nvim' will override this if it detects a different style in an existing file.
+  vim.o.tabstop = 4
+  vim.o.shiftwidth = 4
+  vim.o.expandtab = true
+
   -- Enable undo/redo changes even after closing and reopening a file
   vim.o.undofile = true
 
