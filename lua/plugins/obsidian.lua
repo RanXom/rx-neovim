@@ -31,13 +31,7 @@ require('obsidian').setup {
     time_format = "%H:%M",
   },
 
-  disable_frontmatter = true,
-
-  frontmatter = {
-    func = function(note)
-      return {}
-    end,
-  },
+  frontmatter = { enabled = false },
 
   note_id_func = function(title)
     if title ~= nil then
