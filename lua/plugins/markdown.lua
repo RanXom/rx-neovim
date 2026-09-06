@@ -10,11 +10,21 @@ vim.pack.add { gh 'MeanderingProgrammer/render-markdown.nvim' }
 require('render-markdown').setup {
   -- Render markdown in ALL modes (including Insert mode)
   render_modes = true,
-  
+
   -- Disable built-in LaTeX unicode rendering.
   -- render-latex.nvim handles display math as images with higher fidelity.
   latex = {
     enabled = false,
+  },
+
+  indent = {
+    enabled = true,
+    render_modes = false,
+    per_level = 2,
+    skip_level = 1,
+    skip_heading = true,
+    icon = '▎',
+    highlight = 'RenderMarkdownIndent',
   },
 }
 
@@ -34,11 +44,11 @@ vim.schedule(function()
       self.buf = buf
       self.node = node
       self.type = node:type()
-      
+
       -- SAFE TEXT RETRIEVAL
       local success, text = pcall(vim.treesitter.get_node_text, node, buf)
       self.text = success and (text or "") or ""
-      
+
       local start_row, start_col, end_row, end_col = node:range()
       self.start_row = start_row
       self.start_col = start_col
