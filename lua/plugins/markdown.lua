@@ -23,7 +23,7 @@ require('render-markdown').setup {
     per_level = 2,
     skip_level = 1,
     skip_heading = true,
-    icon = '▎',
+    icon = '',
     highlight = 'RenderMarkdownIndent',
   },
 }
