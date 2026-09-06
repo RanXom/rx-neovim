@@ -17,14 +17,11 @@ require('render-markdown').setup {
     enabled = false,
   },
 
+  -- NOTE: indent is intentionally disabled — it indents ALL content inside
+  -- heading sections (including separators, paragraphs, etc.), not just lists.
+  -- List visual distinction comes from the bullet character render-markdown adds.
   indent = {
-    enabled = true,
-    render_modes = false,
-    per_level = 2,
-    skip_level = 1,
-    skip_heading = true,
-    icon = '',
-    highlight = 'RenderMarkdownIndent',
+    enabled = false,
   },
 }
 
