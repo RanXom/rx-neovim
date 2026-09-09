@@ -37,3 +37,28 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.opt_local.expandtab = true
   end,
 })
+
+-- Enable spell checking for markdown and text files
+vim.api.nvim_create_autocmd('FileType', {
+  desc = 'Enable spell checking for text files',
+  group = vim.api.nvim_create_augroup('enable-spellcheck', { clear = true }),
+  pattern = { 'markdown', 'text', 'txt' },
+  callback = function()
+    vim.opt_local.spell = true
+    vim.opt_local.spelllang = 'en_us'
+  end,
+})
+
+-- gopass security hardening (NixOS/Linux: gopass uses /dev/shm for temp files)
+-- Prevents Neovim from leaking password data via swap, backup, undo, or shada files.
+vim.api.nvim_create_autocmd({ 'BufNewFile', 'BufRead' }, {
+  desc = 'Disable all persistence for gopass secrets',
+  group = vim.api.nvim_create_augroup('gopass-hardening', { clear = true }),
+  pattern = '/dev/shm/gopass*',
+  callback = function()
+    vim.opt_local.swapfile = false
+    vim.opt_local.backup = false
+    vim.opt_local.undofile = false
+    vim.opt_local.shadafile = 'NONE'
+  end,
+})
