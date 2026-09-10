@@ -218,6 +218,9 @@ local gh = require('core.utils').gh
       
       -- Make command-line messages transparent (fixes disjointed background on cmdheight=0)
       vim.api.nvim_set_hl(0, "MsgArea", { bg = "NONE" })
+
+      -- Cursor character rendered inside the statusline cmdline (line cursor ▏)
+      vim.api.nvim_set_hl(0, "MiniStatuslineCursor", { fg = c.base0D, bg = "NONE", bold = true })
     end
   })
 
