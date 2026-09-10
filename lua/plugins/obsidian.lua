@@ -31,7 +31,12 @@ require('obsidian').setup {
     time_format = "%H:%M",
   },
 
-  frontmatter = { enabled = false },
+  frontmatter = {
+    enabled = false,
+    -- Fallback: even if obsidian's rename path bypasses `enabled`,
+    -- return an empty table so no keys are written.
+    func = function(_) return {} end,
+  },
 
   note_id_func = function(title)
     if title ~= nil then
