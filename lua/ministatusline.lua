@@ -641,7 +641,7 @@ H.default_content_active = function()
     local pos = _G.custom_cmdline.pos or #text
     local left  = text:sub(1, pos)
     local right = text:sub(pos + 1)
-    filename = prompt .. firstc .. left .. "%#MiniStatuslineCursor#▏%#MiniStatuslineFilename#" .. right
+    filename = prompt .. firstc .. left .. "█" .. right
 
     -- Hide git/diff/diagnostics/lsp in command and prompt modes
     git = ''
