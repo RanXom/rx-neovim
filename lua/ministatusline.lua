@@ -629,18 +629,16 @@ H.default_content_active = function()
       firstc = ''
     end
     
-    filename = prompt .. firstc .. text
-
-    -- Escape '%' so it renders literally instead of being interpreted
-    -- as a statusline format code (e.g. %y = filetype, %f = filename)
-    filename = filename:gsub('%%', '%%%%')
+    -- Escape '%' in the question so it renders literally instead of being
+    -- interpreted as a statusline format code (e.g. %y = filetype)
     question = question:gsub('%%', '%%%%')
 
-    -- Insert a line cursor (▏) at the correct position within the text.
-    -- pos is a byte offset, so we split on bytes to be safe.
+    -- Insert a line cursor (█) at the correct position within the text.
+    -- pos is a byte offset, so we split on bytes to be safe, then escape
+    -- '%' per side so it isn't interpreted as a statusline format code.
     local pos = _G.custom_cmdline.pos or #text
-    local left  = text:sub(1, pos)
-    local right = text:sub(pos + 1)
+    local left  = text:sub(1, pos):gsub('%%', '%%%%')
+    local right = text:sub(pos + 1):gsub('%%', '%%%%')
     filename = prompt .. firstc .. left .. "█" .. right
 
     -- Hide git/diff/diagnostics/lsp in command and prompt modes
