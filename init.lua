@@ -9,6 +9,8 @@ require 'core.plugin-events'
 -- ============================================================
 -- Plugins
 -- ============================================================
+require 'plugins.snacks'
+require 'plugins.cmdline_ui'
 require 'plugins.ui'
 require 'plugins.telescope'
 require 'plugins.lsp'
@@ -19,8 +21,6 @@ require 'plugins.obsidian'
 require 'plugins.markdown'
 require 'plugins.image'
 require 'plugins.latex'
-require 'plugins.cmdline_ui'
-require 'plugins.snacks'
 require 'plugins.tree'
 require 'plugins.indent'
 require 'plugins.bufferline'

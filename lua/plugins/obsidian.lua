@@ -17,6 +17,10 @@ require('obsidian').setup {
 
   picker = {
     name = 'telescope.nvim',
+    note_mappings = {
+      new = "<C-x>",
+      insert_link = "<C-l>",
+    },
   },
 
   notes_subdir = "6 - Main Notes",
@@ -28,9 +32,10 @@ require('obsidian').setup {
   },
 
   frontmatter = {
-    func = function(note)
-      return {}
-    end,
+    enabled = false,
+    -- Fallback: even if obsidian's rename path bypasses `enabled`,
+    -- return an empty table so no keys are written.
+    func = function(_) return {} end,
   },
 
   note_id_func = function(title)

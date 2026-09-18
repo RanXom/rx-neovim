@@ -14,19 +14,24 @@ end
 
 require("nvim-tree").setup {
   on_attach = my_on_attach,
+  hijack_directories = {
+    enable = false,
+  },
   view = {
     width = 30,
     relativenumber = false,
     number = false,
   },
   filters = {
-    dotfiles = false,
+    dotfiles = true,
+    git_ignored = true,
+    custom = { "^\\.git$" },
   },
   git = {
     enable = true,
-    ignore = false,
   },
   renderer = {
+    root_folder_label = false,
     icons = {
       show = {
         file = vim.g.have_nerd_font,
@@ -37,6 +42,31 @@ require("nvim-tree").setup {
     },
   },
 }
+
+-- Open empty buffer alongside nvim-tree when opening a directory (e.g. `nvim .`)
+local function open_nvim_tree(data)
+  local directory = vim.fn.isdirectory(data.file) == 1
+  if not directory then
+    return
+  end
+
+  -- create a new, empty buffer
+  vim.cmd.enew()
+
+  -- wipe the directory buffer
+  vim.cmd.bw(data.buf)
+
+  -- change to the directory
+  vim.cmd.cd(data.file)
+
+  -- open the tree
+  require("nvim-tree.api").tree.open()
+end
+
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = open_nvim_tree,
+  desc = "Open empty buffer alongside nvim-tree on directory open",
+})
 
 -- Toggle nvim-tree with <leader>e
 vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', { desc = 'Toggle File [E]xplorer', silent = true })

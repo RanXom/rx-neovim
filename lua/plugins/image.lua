@@ -41,7 +41,7 @@ require('image').setup {
 
   -- Clear images when floating windows (cmp, telescope, which-key) overlap
   window_overlap_clear_enabled = true,
-  window_overlap_clear_ft_ignore = { 'cmp_menu', 'cmp_docs', '' },
+  window_overlap_clear_ft_ignore = { 'blink-cmp-menu', 'blink-cmp-documentation', 'blink-cmp-signature', '' },
 
   -- Hijack file patterns to render images when opened directly
   hijack_file_patterns = { '*.png', '*.jpg', '*.jpeg', '*.gif', '*.webp', '*.avif' },
