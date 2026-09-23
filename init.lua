@@ -1,4 +1,15 @@
 -- ============================================================
+-- Version requirements
+-- ============================================================
+-- Everything below is built on `vim.pack` (the plugin manager and
+-- the `PackChanged` autocmd event), which requires Neovim 0.12+.
+-- Fail fast with a clear message instead of a confusing runtime
+-- error like `E5113: Invalid 'event': 'PackChanged'`.
+if vim.fn.has('nvim-0.12') ~= 1 then
+  error(('rx-neovim requires Neovim 0.12 or newer (found v%s). Install a recent Neovim and try again.'):format(vim.version().version))
+end
+
+-- ============================================================
 -- Core
 -- ============================================================
 require 'core.options'
