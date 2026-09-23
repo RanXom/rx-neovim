@@ -119,6 +119,9 @@ local servers = {
   
   -- Java and SpringBoot
   jdtls = {},
+  
+  -- Nix
+  ['nil_ls'] = {},
 
   stylua = {}, -- Used to format Lua code
 
@@ -179,7 +182,7 @@ require('mason-lspconfig').setup {
 -- You can press `g?` for help in this menu.
 local ensure_installed = {}
 for k, v in pairs(servers) do
-  if k ~= "clangd" then
+  if k ~= "clangd" and k ~= "nil_ls" then
     table.insert(ensure_installed, k)
   end
 end
@@ -212,6 +215,12 @@ servers.clangd = {
     "/run/current-system/sw/bin/clangd",
     "--query-driver=/run/current-system/sw/bin/g++,/nix/store/**/*g++*,/nix/store/**/*gcc*"
   }
+}
+
+-- Use the NixOS system `nil` binary (fast Nix language server) instead of a mason copy
+servers['nil_ls'] = {
+  cmd = { "/run/current-system/sw/bin/nil" },
+  filetypes = { "nix" },
 }
 
 for name, server in pairs(servers) do

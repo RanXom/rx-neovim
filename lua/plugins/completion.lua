@@ -69,31 +69,33 @@ require('blink.cmp').setup {
               -- of the item documentation (only when it offers an include).
               -- NOTE: ctx.label_description is '' (not nil) for clangd, so it
               -- cannot be used to short-circuit a fallback chain.
+              local result
               local doc = ctx.item.documentation
               if type(doc) == 'table' then doc = doc.value end
               if type(doc) == 'string' then
                 local from = doc:match("^[Ff]rom `?([^`%s]+)`?")
-                if from then return from end
+                if from then result = from end
               end
               -- clangd records the header in additionalTextEdits; gopls adds
               -- unimported packages as `import "pkg"` edits the same way.
-              if type(ctx.item.additionalTextEdits) == 'table' then
+              if not result and type(ctx.item.additionalTextEdits) == 'table' then
                 for _, edit in ipairs(ctx.item.additionalTextEdits) do
                   local edit_text = edit.newText or ''
                   local header = edit_text:match('#include%s*[<"]([^>"]+)')
                     or edit_text:match('%f[%w]import%s*[<"]([^>"]+)')
                     or edit_text:match('%f[%w]from%s*["]([^"]+)')
-                  if header then return header end
+                  if header then result = header break end
                 end
               end
               -- TS/rust-analyzer put the module/namespace path here
-              if ctx.label_description ~= '' then return ctx.label_description end
-              -- clangd sends nothing more for symbols already in the TU: fall
-              -- back to the item type (e.g. `int`) rather than the generic
-              -- provider name, so rows remain distinguishable.
-              if ctx.item.detail and ctx.item.detail ~= '' then return ctx.item.detail end
+              if not result and ctx.label_description ~= '' then result = ctx.label_description end
+              -- clangd sends nothing more for symbols already in the TU, and nil
+              -- puts multi-line signatures here: fall back to the item type, but
+              -- collapse whitespace because the menu buffer rejects newlines.
+              if not result and ctx.item.detail and ctx.item.detail ~= '' then result = ctx.item.detail end
               -- Last resort: provider name (LSP / Path / Snippets)
-              return ctx.source_name
+              result = result or ctx.source_name
+              return result:gsub('%s+', ' '):gsub('^%s+', ''):gsub('%s+$', '')
             end,
             highlight = 'BlinkCmpSource',
           },
