@@ -79,3 +79,4 @@ To search for documentation or keybindings:
 ## Acknowledgements
 
 Built upon [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim), modified to use native package management and a custom UI.
+This line is for mirror test.
