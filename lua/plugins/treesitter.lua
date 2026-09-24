@@ -34,8 +34,24 @@ local function treesitter_try_attach(buf, language)
   -- in case there is no indent query, the indentexpr will fallback to the vim's built in one
   local has_indent_query = vim.treesitter.query.get(language, 'indents') ~= nil
 
-  -- Enable treesitter based indentation
-  if has_indent_query then vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()" end
+  -- Disable treesitter indent for C/C++ — its `align` query triggers on ERROR nodes
+  -- (e.g. incomplete `ans[i] =` while typing) and returns absolute indent `o_scol+1` = 9,
+  -- which causes `o`/`O`/`<CR>` after `vector<int> ans(...);` to jump to 8-9 spaces
+  -- instead of `shiftwidth` (2). Fall back to native `cindent` which respects `shiftwidth`.
+  local ts_indent_exclude = { c = true, cpp = true }
+  if has_indent_query and not ts_indent_exclude[language] then
+    vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+  elseif ts_indent_exclude[language] then
+    vim.bo.indentexpr = ''
+    vim.bo.cindent = true
+    -- Keep `public:`/`private:` at class scope (0) like treesitter did, not `shiftwidth`
+    if not vim.bo.cinoptions:find('g0') then
+      vim.bo.cinoptions = vim.bo.cinoptions == '' and 'g0' or vim.bo.cinoptions .. ',g0'
+    end
+    -- Use Neovim's built-in C indent; `lisp`/`smartindent` would interfere
+    vim.bo.lisp = false
+    vim.bo.smartindent = false
+  end
 end
 
 local available_parsers = require('nvim-treesitter').get_available()

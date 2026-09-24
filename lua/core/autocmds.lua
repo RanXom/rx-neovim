@@ -18,10 +18,11 @@ vim.api.nvim_create_autocmd('TextYankPost', {
 vim.api.nvim_create_autocmd('FileType', {
   desc = 'Set 2-space indent for web and config files',
   group = vim.api.nvim_create_augroup('set-indent-2', { clear = true }),
-  pattern = { 'html', 'css', 'javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'json', 'yaml', 'lua', 'markdown', 'nix' },
+  pattern = { 'html', 'css', 'javascript', 'javascriptreact', 'typescript', 'typescriptreact', 'json', 'yaml', 'lua', 'markdown', 'nix', 'cpp' },
   callback = function()
     vim.opt_local.shiftwidth = 2
     vim.opt_local.tabstop = 2
+    vim.opt_local.softtabstop = 2
     vim.opt_local.expandtab = true
   end,
 })
@@ -30,10 +31,11 @@ vim.api.nvim_create_autocmd('FileType', {
 vim.api.nvim_create_autocmd('FileType', {
   desc = 'Set 4-space indent for systems and backend files',
   group = vim.api.nvim_create_augroup('set-indent-4', { clear = true }),
-  pattern = { 'c', 'cpp', 'rust', 'python', 'java', 'go' },
+  pattern = { 'c', 'rust', 'python', 'java', 'go' },
   callback = function()
     vim.opt_local.shiftwidth = 4
     vim.opt_local.tabstop = 4
+    vim.opt_local.softtabstop = 4
     vim.opt_local.expandtab = true
   end,
 })
