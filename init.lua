@@ -40,8 +40,35 @@ end
 if not applied then
   local ok_cat, catppuccin = pcall(require, 'catppuccin')
   if ok_cat then
-    pcall(catppuccin.setup, { flavour = 'mocha' })
+    -- Transparent mocha: terminal wallpaper shows through. Re-applied on
+    -- every startup (no autocmd needed -- nothing else overrides it).
+    pcall(catppuccin.setup, {
+      flavour = 'mocha',
+      transparent_background = true,
+    })
     applied = pcall(vim.cmd.colorscheme, 'catppuccin-mocha')
+    if applied then
+      -- Belt-and-braces: keep nvim chrome transparent even if a
+      -- catppuccin update changes its transparent_background coverage.
+      -- nvim_set_hl REPLACES the definition, so re-apply existing attrs
+      -- minus bg instead of wiping fg/bold/etc.
+      for _, group in ipairs({
+        'Normal',
+        'NormalNC',
+        'NormalFloat',
+        'SignColumn',
+        'StatusLine',
+        'StatusLineNC',
+        'MsgArea',
+      }) do
+        local hl_ok, cur = pcall(vim.api.nvim_get_hl, 0, { name = group })
+        if hl_ok and cur and not cur.link then
+          cur.bg = nil
+          cur.ctermbg = nil
+          pcall(vim.api.nvim_set_hl, 0, group, cur)
+        end
+      end
+    end
   end
 end
 
