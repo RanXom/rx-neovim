@@ -223,20 +223,37 @@ end
 --    :Mason
 --
 -- You can press `g?` for help in this menu.
+--
+-- Termux/Android: Mason binaries are built for glibc desktops and fail
+-- on Android (bionic). Skip auto-install there entirely -- install LSPs
+-- with `pkg install` instead (e.g. `pkg install lua-language-server
+-- stylua clang gopls rust-analyzer nodejs`). Mason stays usable via
+-- :Mason for manual installs, it just won't spam failures on startup.
+local is_termux = vim.env.PREFIX and vim.env.PREFIX:find('com.termux', 1, true) ~= nil
 local ensure_installed = {}
-for k, _ in pairs(servers) do
-  -- Skip servers already provided by the system; Mason would duplicate them.
-  -- (nil_ls is already nil-ed out when unavailable, so it never reaches here.)
-  if k == 'clangd' and system_clangd then goto continue end
-  table.insert(ensure_installed, k)
-  ::continue::
+if not is_termux then
+  for k, _ in pairs(servers) do
+    -- Skip servers already provided by the system; Mason would duplicate them.
+    -- (nil_ls is already nil-ed out when unavailable, so it never reaches here.)
+    if k == 'clangd' and system_clangd then goto continue end
+    table.insert(ensure_installed, k)
+    ::continue::
+  end
+  vim.list_extend(ensure_installed, {
+    -- You can add other tools here that you want Mason to install
+  })
+else
+  vim.schedule(function()
+    vim.notify(
+      'lsp: Termux detected, skipping Mason auto-install (binaries are glibc-only). Use `pkg install <server>` instead.',
+      vim.log.levels.INFO
+    )
+  end)
 end
-vim.list_extend(ensure_installed, {
-  -- You can add other tools here that you want Mason to install
-})
 
 -- Mason itself needs curl/tar/unzip/git. On minimal systems (Termux)
 -- it will just fail installs gracefully -- never crash startup.
+-- Empty ensure_installed on Termux = setup only, no install attempts.
 pcall(require('mason-tool-installer').setup, { ensure_installed = ensure_installed })
 
 -- ============================================================================

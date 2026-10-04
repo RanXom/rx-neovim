@@ -7,13 +7,37 @@ local gh = require('core.utils').gh
 
 vim.pack.add { { src = gh 'obsidian-nvim/obsidian.nvim', version = vim.version.range '3.*' } }
 
-require('obsidian').setup {
-  workspaces = {
-    {
-      name = 'Lessons',
-      path = '~/Documents/Obsidian/Lessons',
-    },
+-- Only register workspaces whose path exists on this machine.
+-- obsidian.nvim throws E5113 ("Please specify a valid workspace") when
+-- every workspace path is missing (e.g. Termux/phone without the vault
+-- synced), which would abort the rest of init.lua. Skip setup instead.
+local candidate_workspaces = {
+  {
+    name = 'Lessons',
+    path = '~/Documents/Obsidian/Lessons',
   },
+}
+
+local workspaces = {}
+for _, ws in ipairs(candidate_workspaces) do
+  local expanded = vim.fn.expand(ws.path)
+  if vim.fn.isdirectory(expanded) == 1 then
+    table.insert(workspaces, ws)
+  end
+end
+
+if #workspaces == 0 then
+  vim.schedule(function()
+    vim.notify(
+      'obsidian: no vault path exists on this machine, skipping setup. Sync your vault to enable it.',
+      vim.log.levels.INFO
+    )
+  end)
+  return
+end
+
+local setup_ok, err = pcall(require('obsidian').setup, {
+  workspaces = workspaces,
 
   picker = {
     name = 'telescope.nvim',
@@ -55,7 +79,14 @@ require('obsidian').setup {
   },
 
   legacy_commands = false,
-}
+})
+
+if not setup_ok then
+  vim.schedule(function()
+    vim.notify('obsidian: setup failed: ' .. tostring(err), vim.log.levels.WARN)
+  end)
+  return
+end
 
 -- Obsidian keymaps
 vim.keymap.set("n", "<leader>oo", "<cmd>Obsidian quick_switch<CR>", { desc = "Obsidian: Quick Switch" })
