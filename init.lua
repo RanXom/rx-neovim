@@ -54,8 +54,26 @@ require 'plugins.autopairs'
 -- ============================================================
 -- Integrations
 -- ============================================================
+-- Preferred: matugen-generated base16 palette. Fallback: catppuccin-mocha.
+-- The fallback covers fresh clones (plugins not yet installed), offline
+-- systems, and minimal installs (Termux/Ubuntu) where base16 failed.
+local applied = false
 local ok, matugen = pcall(require, 'matugen')
-if ok then matugen.setup() end
+if ok then
+  local setup_ok, result = pcall(matugen.setup)
+  applied = setup_ok and result ~= false
+end
+
+if not applied then
+  local ok_cat, catppuccin = pcall(require, 'catppuccin')
+  if ok_cat then
+    pcall(catppuccin.setup, { flavour = 'mocha' })
+    pcall(vim.cmd.colorscheme, 'catppuccin-mocha')
+  else
+    -- Last resort: built-in scheme so we never boot with no colors.
+    pcall(vim.cmd.colorscheme, 'habamax')
+  end
+end
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et

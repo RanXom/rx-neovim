@@ -66,6 +66,12 @@ local gh = require('core.utils').gh
   -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
   vim.pack.add { gh 'RRethy/base16-nvim' }
 
+  -- Fallback colorscheme: catppuccin-mocha.
+  -- Used when matugen/base16 is unavailable (fresh clone, offline,
+  -- minimal system). Installed unconditionally so the fallback never
+  -- fails due to a missing plugin.
+  vim.pack.add { gh 'catppuccin/nvim' }
+
   -- Highlight todo, notes, etc in comments
   vim.pack.add { gh 'folke/todo-comments.nvim' }
   require('todo-comments').setup { signs = false }

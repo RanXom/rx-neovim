@@ -166,12 +166,55 @@ vim.pack.add {
 }
 
 -- Automatically install LSPs and related tools to stdpath for Neovim
-require('mason').setup {}
+-- pcall: Mason needs curl/tar/unzip -- never crash startup on minimal systems.
+pcall(require('mason').setup)
 
 -- Translates between nvim-lspconfig server names and mason.nvim package names (e.g. lua_ls <-> lua-language-server)
-require('mason-lspconfig').setup {
+pcall(require('mason-lspconfig').setup, {
   automatic_enable = false, -- Change this to true if you want to automatically enable servers that are installed manually (e.g. via :Mason / :MasonInstall)
-}
+})
+
+-- ============================================================================
+-- Portable server resolution (NixOS / Ubuntu / Termux / macOS)
+-- Prefer a system binary when present, otherwise fall back to Mason.
+-- Missing binaries never error: the server is skipped or left for Mason.
+-- ============================================================================
+local function exe(bin) return vim.fn.executable(bin) == 1 end
+
+local nixos_clangd = '/run/current-system/sw/bin/clangd'
+local nixos_nil = '/run/current-system/sw/bin/nil'
+
+-- clangd: NixOS needs --query-driver so it mimics the system g++.
+-- Elsewhere a plain `clangd` in PATH is enough, otherwise Mason provides it.
+local system_clangd = exe(nixos_clangd) and nixos_clangd or (exe 'clangd' and 'clangd' or nil)
+if system_clangd then
+  if system_clangd == nixos_clangd then
+    servers.clangd = {
+      cmd = {
+        nixos_clangd,
+        '--query-driver=/run/current-system/sw/bin/g++,/nix/store/**/*g++*,/nix/store/**/*gcc*',
+      },
+    }
+  else
+    servers.clangd = {}
+  end
+else
+  -- No system clangd: let Mason install/provide it (don't pre-define cmd).
+  servers.clangd = {}
+end
+
+-- nil (Nix LS): only useful when the binary exists. On Ubuntu/Termux
+-- without Nix, skip it entirely so opening a .nix file doesn't spam
+-- "spawn failed" errors.
+local system_nil = exe(nixos_nil) and nixos_nil or (exe 'nil' and 'nil' or nil)
+if system_nil then
+  servers['nil_ls'] = {
+    cmd = { system_nil },
+    filetypes = { 'nix' },
+  }
+else
+  servers['nil_ls'] = nil
+end
 
 -- Ensure the servers and tools above are installed
 --
@@ -181,49 +224,49 @@ require('mason-lspconfig').setup {
 --
 -- You can press `g?` for help in this menu.
 local ensure_installed = {}
-for k, v in pairs(servers) do
-  if k ~= "clangd" and k ~= "nil_ls" then
-    table.insert(ensure_installed, k)
-  end
+for k, _ in pairs(servers) do
+  -- Skip servers already provided by the system; Mason would duplicate them.
+  -- (nil_ls is already nil-ed out when unavailable, so it never reaches here.)
+  if k == 'clangd' and system_clangd then goto continue end
+  table.insert(ensure_installed, k)
+  ::continue::
 end
 vim.list_extend(ensure_installed, {
   -- You can add other tools here that you want Mason to install
 })
 
-require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+-- Mason itself needs curl/tar/unzip/git. On minimal systems (Termux)
+-- it will just fail installs gracefully -- never crash startup.
+pcall(require('mason-tool-installer').setup, { ensure_installed = ensure_installed })
 
 -- ============================================================================
 -- Clangd NixOS & Competitive Programming Fix
 -- Auto-provision the global clangd config so this fix tracks in git!
+-- Harmless on non-NixOS (plain `clangd` ignores unknown query-drivers).
 -- ============================================================================
-local clangd_config_dir = vim.fn.expand("~/.config/clangd")
-local clangd_config_file = clangd_config_dir .. "/config.yaml"
+local clangd_config_dir = vim.fn.expand('~/.config/clangd')
+local clangd_config_file = clangd_config_dir .. '/config.yaml'
 if vim.fn.isdirectory(clangd_config_dir) == 0 then
-  vim.fn.mkdir(clangd_config_dir, "p")
+  pcall(vim.fn.mkdir, clangd_config_dir, 'p')
 end
 if vim.fn.filereadable(clangd_config_file) == 0 then
-  local f = io.open(clangd_config_file, "w")
+  local f = io.open(clangd_config_file, 'w')
   if f then
-    f:write("CompileFlags:\n  Compiler: g++\n")
+    f:write('CompileFlags:\n  Compiler: g++\n')
     f:close()
   end
 end
 
--- Configure clangd to query the NixOS system compilers so it perfectly mimics g++
-servers.clangd = {
-  cmd = {
-    "/run/current-system/sw/bin/clangd",
-    "--query-driver=/run/current-system/sw/bin/g++,/nix/store/**/*g++*,/nix/store/**/*gcc*"
-  }
-}
-
--- Use the NixOS system `nil` binary (fast Nix language server) instead of a mason copy
-servers['nil_ls'] = {
-  cmd = { "/run/current-system/sw/bin/nil" },
-  filetypes = { "nix" },
-}
-
 for name, server in pairs(servers) do
   vim.lsp.config(name, server)
+  -- Guarded: if the binary is still missing at FileType time, enable()
+  -- itself is safe (spawn failure is a buffer-local warning, not a crash),
+  -- but skip nil-style servers with an explicit missing cmd just in case.
+  if server and server.cmd and not exe(server.cmd[1]) then
+    -- Fall through to Mason-provided default: clear the bad cmd so
+    -- lspconfig/mason resolution can supply the binary instead.
+    server.cmd = nil
+    vim.lsp.config(name, server)
+  end
   vim.lsp.enable(name)
 end
